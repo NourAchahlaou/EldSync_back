@@ -9,10 +9,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
+    // This method is used to register STOMP endpoints. Here, an endpoint "/wss" is being registered and SockJS is enabled.
+    // wss is for secure websocket
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/wss").withSockJS();
     }
+
+    // This method is used to configure the message broker. It sets the application destination prefixes and enables a simple in-memory message broker.
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
