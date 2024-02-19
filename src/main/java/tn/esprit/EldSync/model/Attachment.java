@@ -16,7 +16,7 @@ public class Attachment {
     @Id
     private String id;
     private String filename;
-    private String filetype;
+    private AttachmentType filetype;
     private long filesize;
     private String downloadUrl;
 }
