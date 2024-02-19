@@ -6,7 +6,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-public class WebSocketConfig {
+
     @Configuration
     @EnableWebSocketMessageBroker
     public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -22,5 +22,5 @@ public class WebSocketConfig {
         }
 
 
-    }
+
 }
