@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
+
 public class User implements Serializable {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class User implements Serializable {
     private String gender;
     private Integer contacInfo;
     private String role;
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private Profile profile;
 }
 
