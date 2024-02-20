@@ -2,6 +2,9 @@ package tn.esprit.EldSync.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +20,8 @@ public class VitalSigns {
     private int temperature;
     private int bloodSugar;
     private float respiratoryRate;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HealthAlerts> healthAlerts = new ArrayList<>();
 
 }

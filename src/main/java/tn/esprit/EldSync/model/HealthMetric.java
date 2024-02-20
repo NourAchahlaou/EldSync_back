@@ -3,6 +3,9 @@ package tn.esprit.EldSync.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,5 +22,6 @@ public class HealthMetric {
     private int bloodSugar;
     private float weight;
     private float height;
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HealthAlerts> healthAlerts = new ArrayList<>();
 }

@@ -23,4 +23,10 @@ public class HealthAlerts {
     @Enumerated(EnumType.STRING)
     private ResolvedStatus resolvedStatus;
 
+/*    @Column(name = "health_metric_id")
+    private Integer healthMetricId;
+
+    @Column(name = "vital_signs_id")
+    private Integer vitalSignsId;*/
+
 }
