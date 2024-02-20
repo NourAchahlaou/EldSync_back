@@ -26,25 +26,21 @@ public class Event {
 
     private String banner;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     @Enumerated(EnumType.STRING)
     private EventCategory category;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address location;
+
+    private String location;
 
     private float price;
 
     @Enumerated(EnumType.STRING)
     private EventStatus status;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
     // Constructors, Getters, and Setters

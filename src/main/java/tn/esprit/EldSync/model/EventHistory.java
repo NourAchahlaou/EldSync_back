@@ -25,7 +25,6 @@ public class EventHistory {
     @Enumerated(EnumType.STRING)
     private Attendance attendance;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
 
