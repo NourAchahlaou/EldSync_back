@@ -30,7 +30,6 @@ public class EventWishlist {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date addedAt;
 
 }
