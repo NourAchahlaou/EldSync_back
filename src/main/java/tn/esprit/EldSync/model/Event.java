@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 @Entity
 @Table(name = "events")
@@ -18,29 +18,38 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private Long idEvent;
 
     private String name;
 
-    @Lob // Large Object for handling large data fields
     private String description;
 
-    private String image;
+    private String banner;
 
-    private LocalDate date;
-
-    private LocalTime time;
+    private Date date;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private EventCategory category;
+
 
     private String location;
 
-    private Double price;
+    private float price;
 
-    private String venue;
+    @Enumerated(EnumType.STRING)
+    private EventStatus status;
 
-    public enum Category {
-        Entertainment, OutdoorActivities, HealthCheckup, SocialGathering
-    }
+    private Date createdAt;
+
+    private Date updatedAt;
+
+    // Constructors, Getters, and Setters
+}
+
+enum EventCategory {
+    ENTERTAINMENT, OUTDOOR_ACTIVITIES, HEALTH_CHECKUP, SOCIAL_GATHERING
+}
+
+enum EventStatus {
+    APPROVED, PENDING
 }

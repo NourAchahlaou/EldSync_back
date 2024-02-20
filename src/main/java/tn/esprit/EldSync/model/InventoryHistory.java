@@ -38,4 +38,6 @@ public class InventoryHistory {
 
     private String comment;
     private LocalDate historyDate;
+
+  
 }

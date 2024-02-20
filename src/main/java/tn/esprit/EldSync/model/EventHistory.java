@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.Date;
 
 @Entity
 @Table(name = "event_history")
@@ -17,18 +16,20 @@ public class EventHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventHistoryId;
+    private Long idHistoryItem;
 
     @ManyToOne
-    @JoinColumn(name = "eventId", referencedColumnName = "eventId")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private Attendance attendance;
 
-    private LocalDate date;
+    private Date createdAt;
 
-    public enum Type {
-        upcoming, past, Rescheduled
-    }
+
+
+enum Attendance {
+    MISSED, ATTENDED
+}
 }
