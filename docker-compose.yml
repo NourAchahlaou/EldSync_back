@@ -9,7 +9,7 @@ services:
     ports:
       - 27017:27017
 
-  # Mongo Express Service
+  # Mongo Express Service // a tool to explore the database
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
