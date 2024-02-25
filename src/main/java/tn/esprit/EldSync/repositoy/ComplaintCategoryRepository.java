@@ -1,6 +1,6 @@
-package package tn.esprit.EldSync.repositoy;
+ package tn.esprit.EldSync.repositoy;
 
-import com.example.nouranmanagment.entities.ComplaintCategory;
+import tn.esprit.EldSync.model.ComplaintCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ComplaintCategoryRepository extends JpaRepository<ComplaintCategory, Integer> {

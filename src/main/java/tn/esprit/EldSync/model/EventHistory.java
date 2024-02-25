@@ -1,4 +1,4 @@
-package tn.esprit.EldSync.model.Event;
+package tn.esprit.EldSync.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
