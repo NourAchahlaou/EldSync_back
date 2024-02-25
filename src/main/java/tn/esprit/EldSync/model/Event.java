@@ -1,19 +1,19 @@
 package tn.esprit.EldSync.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.transaction.Transactional;
+import lombok.*;
 
 import java.util.Date;
-
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Event {
 
     @Id
@@ -30,7 +30,7 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     private EventCategory category;
-
+    
 
     private String location;
 
@@ -43,13 +43,8 @@ public class Event {
 
     private Date updatedAt;
 
-    // Constructors, Getters, and Setters
+    @ManyToMany (mappedBy ="events",cascade = CascadeType.ALL)
+    private Set<User> users;
+
 }
 
-enum EventCategory {
-    ENTERTAINMENT, OUTDOOR_ACTIVITIES, HEALTH_CHECKUP, SOCIAL_GATHERING
-}
-
-enum EventStatus {
-    APPROVED, PENDING
-}

@@ -22,6 +22,9 @@ public class HealthMetric {
     private int bloodSugar;
     private float weight;
     private float height;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HealthAlerts> healthAlerts = new ArrayList<>();
+
 }
+

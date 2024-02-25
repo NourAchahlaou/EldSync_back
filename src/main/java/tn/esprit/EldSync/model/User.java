@@ -1,17 +1,20 @@
 package tn.esprit.EldSync.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.HashSet;
+import tn.esprit.EldSync.model.Event;
+
 
 import java.io.Serializable;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Data
 @Entity
 
 public class User implements Serializable {
@@ -21,9 +24,15 @@ public class User implements Serializable {
     private String email;
     private String password;
     private String gender;
-    private Integer contacInfo;
+    private Integer contactInfo;
     private String role;
+
     @OneToOne (cascade = CascadeType.ALL)
     private Profile profile;
+
+
+    @ManyToMany(cascade = CascadeType.ALL )
+    private Set<Event> events ;
+
 }
 
