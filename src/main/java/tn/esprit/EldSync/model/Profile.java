@@ -22,7 +22,8 @@ public class Profile implements Serializable {
     private String lastName;
     private Byte photo;
     private String Descrpiton;
-    private Integer contacInfo;
+    private Integer contactInfo;
+
     @OneToOne (mappedBy = "profile")
     private User user;
 

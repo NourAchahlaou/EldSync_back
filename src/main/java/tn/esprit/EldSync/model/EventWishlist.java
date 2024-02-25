@@ -26,10 +26,6 @@ public class EventWishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idWishlistItem;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
-
     private Date addedAt;
 
 }
