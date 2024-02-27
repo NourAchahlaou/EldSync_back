@@ -1,6 +1,7 @@
 package tn.esprit.EldSync.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import tn.esprit.EldSync.model.User;
 import tn.esprit.EldSync.service.ServiceEvent;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +62,56 @@ public class EventController {
 
         if (userWithMostEvents != null) {
             return ResponseEntity.ok(userWithMostEvents);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
+    @GetMapping("/by-donation-date")
+    public ResponseEntity<List<Event>> getEventsByDonationDateRange(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate) {
+
+        List<Event> events = serviceEvent.getEventsByDonationDateRange(fromDate, toDate);
+
+        if (!events.isEmpty()) {
+            return ResponseEntity.ok(events);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @GetMapping("/upcomingEvent")
+    public ResponseEntity<List<Event>> getUpcomingEvents() {
+        List<Event> upcomingEvents = serviceEvent.getUpcomingEvents();
+
+        if (!upcomingEvents.isEmpty()) {
+            return ResponseEntity.ok(upcomingEvents);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/pastEvent")
+    public ResponseEntity<List<Event>> getPastEvents() {
+        List<Event> pastEvents = serviceEvent.getPastEvents();
+
+        if (!pastEvents.isEmpty()) {
+            return ResponseEntity.ok(pastEvents);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/Event-by-category")
+    public ResponseEntity<List<Event>> filterEventsByCategory(@RequestParam String category) {
+        List<Event> events = serviceEvent.filterEventsByCategory(category);
+
+        if (!events.isEmpty()) {
+            return ResponseEntity.ok(events);
         } else {
             return ResponseEntity.notFound().build();
         }
