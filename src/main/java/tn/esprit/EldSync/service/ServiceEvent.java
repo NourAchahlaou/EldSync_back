@@ -1,5 +1,6 @@
 package tn.esprit.EldSync.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class ServiceEvent  {
     public Event getEventDetails(Long eventId) {
         return eventRepository.findById(eventId).orElse(null);
     }
-
+    public List<Event> filterEventsByCategory(String category) {return eventRepository.findByCategory(category);}
 
     @Transactional
 
@@ -61,6 +62,20 @@ public class ServiceEvent  {
 
     public User getUserWithMostEventsAttended() {
         return userRepository.findUserWithMostEvents();
+    }
+
+    public List<Event> getEventsByDonationDateRange(Date fromDate, Date toDate) {
+        return eventRepository.findByDateBetween(fromDate, toDate);
+    }
+
+    public List<Event> getUpcomingEvents() {
+        Date currentDate = new Date();
+        return eventRepository.findByDateAfter(currentDate);
+    }
+
+    public List<Event> getPastEvents() {
+        Date currentDate = new Date();
+        return eventRepository.findByDateBefore(currentDate);
     }
 
 
