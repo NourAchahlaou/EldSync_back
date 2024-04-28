@@ -2,12 +2,15 @@ package tn.esprit.EldSync.service;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClient;
 import tn.esprit.EldSync.model.Event;
 import tn.esprit.EldSync.model.EventStatus;
 import tn.esprit.EldSync.model.Item;
@@ -24,6 +29,13 @@ import tn.esprit.EldSync.repositoy.IEventRepository;
 import tn.esprit.EldSync.repositoy.UserRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import com.fasterxml.jackson.databind.JsonNode;
+
+
 
 @Service
 @Slf4j
@@ -32,6 +44,46 @@ public class ServiceEvent  {
     private final IEventRepository eventRepository;
     private final UserRepo userRepository;
     private final Path fileStorageLocation = Paths.get("file-storage-path").toAbsolutePath().normalize();
+    private WebClient webClient;
+
+
+    @Value("${opencage.api.key}")
+    private String apiKey;
+
+    @PostConstruct
+    public void initWebClient() {
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofSeconds(10)); // Sets the response timeout to 10 seconds
+
+        this.webClient = WebClient.builder()
+                .baseUrl("https://api.opencagedata.com/geocode/v1/json")
+                .build();
+    }
+
+    public Mono<List<String>> getLocationSuggestions(String query) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("q", query)
+                        .queryParam("key", apiKey)
+                        .queryParam("pretty", 1)
+                        .build())
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .map(jsonNode -> jsonNode.path("results")
+                        .findValues("formatted")
+                        .stream()
+                        .map(JsonNode::asText)
+                        .collect(Collectors.toList()));
+    }
+
+    public Event approveEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        event.setStatus(EventStatus.APPROVED);
+        return eventRepository.save(event);
+    }
+
 
 
 
