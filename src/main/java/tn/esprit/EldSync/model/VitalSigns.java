@@ -1,4 +1,6 @@
 package tn.esprit.EldSync.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,8 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Getter
-@Setter
 @Table(name = "vitalSigns")
 public class VitalSigns {
     @Id
@@ -22,6 +22,15 @@ public class VitalSigns {
     private float respiratoryRate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("elder") // Ignore elder property during serialization
     private List<HealthAlerts> healthAlerts = new ArrayList<>();
+
+    @ManyToOne
+    @JsonIgnoreProperties("vitalSigns") // Ignore vitalSigns property during serialization
+    private Profile elder;
+
+    @ManyToOne
+    @JsonIgnoreProperties("vitalSigns") // Ignore vitalSigns property during serialization
+    private Profile measurementTaker;
 
 }
