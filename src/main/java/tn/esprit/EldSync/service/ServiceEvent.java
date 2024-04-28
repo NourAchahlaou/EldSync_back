@@ -27,7 +27,6 @@ import tn.esprit.EldSync.Entity.User;
 import tn.esprit.EldSync.repositoy.IEventRepository;
 import tn.esprit.EldSync.Repo.UserRepo;
 import tn.esprit.EldSync.model.Item;
-import tn.esprit.EldSync.repositoy.UserRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
