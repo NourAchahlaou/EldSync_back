@@ -23,15 +23,15 @@ import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 import tn.esprit.EldSync.model.Event;
 import tn.esprit.EldSync.model.EventStatus;
-import tn.esprit.EldSync.model.Item;
-import tn.esprit.EldSync.model.User;
+import tn.esprit.EldSync.Entity.User;
 import tn.esprit.EldSync.repositoy.IEventRepository;
+import tn.esprit.EldSync.Repo.UserRepo;
+import tn.esprit.EldSync.model.Item;
 import tn.esprit.EldSync.repositoy.UserRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -207,7 +207,7 @@ public class ServiceEvent  {
     @Transactional
 
     public void registerUserForEvent(Integer idUser, Long eventId) {
-        User user = userRepository.findById(idUser).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = userRepository.findById(String.valueOf(idUser)).orElseThrow(() -> new EntityNotFoundException("User not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
         user.getEvents().add(event);

@@ -1,24 +1,21 @@
 package tn.esprit.EldSync.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import tn.esprit.EldSync.Entity.User;
 import org.springframework.stereotype.Service;
-import tn.esprit.EldSync.model.User;
-import tn.esprit.EldSync.repositoy.UserRepo;
 
 import java.util.List;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
-public class UserService {
-    private final UserRepo userRepo;
+public interface UserService {
+
+    User addUser(User user);
+    User updateUser (User user);
+    void Delete(long id);
+    List<User> getList();
+  //  List<User> getLikesByPostPaginate(Post post, Integer page, Integer size);
+    //List<User> getLikesByCommentPaginate(Comment comment, Integer page, Integer size);
 
 
-
-    public User AddUser(User user){return userRepo.save(user);}
-    public List <User> retrieveAllUsers(){return userRepo.findAll();}
-    public void removeUser(Integer idUser){userRepo.deleteById(idUser);}
-    public  void retrieveUser(Integer idUser){ userRepo.findById(idUser);}
 
 }

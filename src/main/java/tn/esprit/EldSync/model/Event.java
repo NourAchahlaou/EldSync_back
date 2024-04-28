@@ -1,8 +1,10 @@
 package tn.esprit.EldSync.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
+import tn.esprit.EldSync.Entity.User;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -41,10 +43,12 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus status;
 
+
     private LocalDate createdAt;
 
     private LocalDate updatedAt;
 /*
+    @JsonIgnore
     @ManyToMany (mappedBy ="events",cascade = CascadeType.ALL)
     private Set<User> users;
 */
