@@ -1,4 +1,4 @@
-package tn.esprit.EldSync.model;
+package tn.esprit.EldSync.Enum;
 
 public enum ServiceType {
     FORUM,

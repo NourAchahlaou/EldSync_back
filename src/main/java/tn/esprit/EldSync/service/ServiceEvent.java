@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tn.esprit.EldSync.model.Event;
 import tn.esprit.EldSync.model.EventStatus;
-import tn.esprit.EldSync.model.User;
+import tn.esprit.EldSync.Entity.User;
 import tn.esprit.EldSync.repositoy.IEventRepository;
-import tn.esprit.EldSync.repositoy.UserRepo;
+import tn.esprit.EldSync.Repo.UserRepo;
 
 @Service
 @Slf4j
@@ -45,7 +45,7 @@ public class ServiceEvent  {
     @Transactional
 
     public void registerUserForEvent(Integer idUser, Long eventId) {
-        User user = userRepository.findById(idUser).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = userRepository.findById(String.valueOf(idUser)).orElseThrow(() -> new EntityNotFoundException("User not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
         user.getEvents().add(event);

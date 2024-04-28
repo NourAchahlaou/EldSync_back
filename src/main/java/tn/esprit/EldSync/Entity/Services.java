@@ -1,5 +1,7 @@
-package tn.esprit.EldSync.model;
+package tn.esprit.EldSync.Entity;
 
+import tn.esprit.EldSync.Enum.ServiceType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -20,6 +23,8 @@ public class Services implements Serializable {
     private Integer idService;
     @Enumerated(EnumType.STRING)
     private ServiceType serviceType;
-    @ManyToMany (mappedBy = "services")
-    private Set<Subscription>subscriptions;
+    private double price;
+    @JsonInclude
+    @ManyToMany(mappedBy = "services")
+    private Set<User> users = new HashSet<>();
 }

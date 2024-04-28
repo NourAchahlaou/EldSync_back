@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.EldSync.model.Event;
-import tn.esprit.EldSync.model.User;
+import tn.esprit.EldSync.Entity.User;
 import tn.esprit.EldSync.service.ServiceEvent;
 
 
