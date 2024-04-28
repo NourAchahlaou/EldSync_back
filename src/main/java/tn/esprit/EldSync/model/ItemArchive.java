@@ -2,13 +2,7 @@ package tn.esprit.EldSync.model;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,18 +10,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "items")
+@Table(name = "itemsArchive")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Item {
-
+public class ItemArchive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "idarchive")
+
+    private Long idarchive;
     private String name;
     private String description;
     private Integer quantity;
@@ -36,9 +32,4 @@ public class Item {
 
     @Enumerated(EnumType.STRING)
     private ItemCategory category;
-
-  
-
-
-    
 }
