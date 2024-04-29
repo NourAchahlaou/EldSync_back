@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.*;
 import tn.esprit.EldSync.Entity.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -26,9 +27,10 @@ public class Event {
 
     private String description;
 
-    private String banner;
+    @Lob // Large Object annotation for large data like images
+    private String bannerData;
 
-    private Date date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private EventCategory category;
@@ -41,13 +43,15 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus status;
 
-    private Date createdAt;
 
-    private Date updatedAt;
 
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
+/*
     @JsonIgnore
     @ManyToMany (mappedBy ="events",cascade = CascadeType.ALL)
     private Set<User> users;
-
+*/
 }
 
