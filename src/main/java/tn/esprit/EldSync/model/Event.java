@@ -44,8 +44,8 @@ public class Event {
     private Date createdAt;
 
     private Date updatedAt;
-    @JsonIgnore
 
+    @JsonIgnore
     @ManyToMany (mappedBy ="events",cascade = CascadeType.ALL)
     private Set<User> users;
 
