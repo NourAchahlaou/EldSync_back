@@ -16,7 +16,9 @@ public interface UserRepo extends JpaRepository<User,String> {
 
     Boolean existsByUsername(String username);
 
-    User findUserById(Long userId);
+
+
+    User findUserById(Long id);/*id user*/
    // List<User> findUsersByFollowerUsers(User user, Pageable pageable);
     //List<User> findUsersByFollowingUsers(User user, Pageable pageable);
 

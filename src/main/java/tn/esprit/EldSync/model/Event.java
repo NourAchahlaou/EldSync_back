@@ -1,6 +1,7 @@
 package tn.esprit.EldSync.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -8,6 +9,7 @@ import tn.esprit.EldSync.Entity.User;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -47,10 +49,14 @@ public class Event {
     private LocalDate createdAt;
 
     private LocalDate updatedAt;
-/*
-    @JsonIgnore
-    @ManyToMany (mappedBy ="events",cascade = CascadeType.ALL)
-    private Set<User> users;
-*/
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+            name = "event_user",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> attendees = new HashSet<>();
+
 }
 
