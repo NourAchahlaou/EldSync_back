@@ -1,5 +1,6 @@
 package tn.esprit.EldSync.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.coyote.Response;
@@ -32,11 +33,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.Date;
-import org.springframework.http.MediaType;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
-import java.util.List;
-import java.util.Set;
+import org.springframework.http.MediaType;
 
 
 @RestController
@@ -46,6 +46,20 @@ import java.util.Set;
 public class EventController {
 
     private final ServiceEvent serviceEvent;
+
+
+    @PutMapping("/{eventId}/reschedule")
+    public ResponseEntity<Event> rescheduleEvent(@PathVariable Long eventId, @RequestBody Map<String, String> dateMap) {
+        LocalDate newDate;
+        try {
+            newDate = LocalDate.parse(dateMap.get("date"));
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Event updatedEvent = serviceEvent.rescheduleEvent(eventId, newDate);
+        return ResponseEntity.ok(updatedEvent);
+    }
 
 
 
@@ -160,14 +174,33 @@ public class EventController {
     public Event getEventDetails(@PathVariable("idEvent") Long idEvent) {
         return serviceEvent.getEventDetails(idEvent);
     }
-    @GetMapping("/getItemDetails/{id}")
 
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUserForEvent(@RequestParam Integer idUser, @RequestParam Long eventId) {
-        serviceEvent.registerUserForEvent(idUser, eventId);
+/*
+    @PostMapping("/register/{id}/{eventId}")
+    public ResponseEntity<String> registerUserForEvent(@PathVariable Long id, @PathVariable Long eventId) {
+        serviceEvent.registerUserForEvent(id, eventId);
         return ResponseEntity.ok("User registered for the event");
     }
+*/
+
+    @PostMapping("/{eventId}/register/{userId}")
+    public ResponseEntity<Map<String, String>> registerUserToEvent(@PathVariable Long userId, @PathVariable Long eventId) {
+        serviceEvent.registerUserToEvent(userId, eventId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User registered to event successfully");
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/users/{userId}/events")
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable Long userId) {
+        List<Event> events = serviceEvent.getRegisteredEventsForUser(userId);
+        return ResponseEntity.ok(events);
+    }
+
+
+
+
 
 
     @GetMapping("/user-with-most-events")
@@ -232,16 +265,23 @@ public class EventController {
         }
     }
 
-/*
-    @GetMapping("/user/{idUser}")
-    public ResponseEntity<Set<Event>> getRegisteredEventsForUser(@PathVariable Integer idUser) {
-        Set<Event> registeredEvents = serviceEvent.getRegisteredEventsForUser(idUser);
-        return ResponseEntity.ok(registeredEvents);
+
+    /*@GetMapping("/{id}/events")
+    public ResponseEntity<Set<Event>> getRegisteredEvents(@PathVariable Long id) {
+        try {
+            Set<Event> events = serviceEvent.getRegisteredEventsForUser(id);
+            return ResponseEntity.ok(events);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }*/
 
     @GetMapping("/locationsSuggestions")
     public Mono<List<String>> getLocationSuggestions(@RequestParam String query) {
         return serviceEvent.getLocationSuggestions(query);
     }
+
+
+
 
 }
