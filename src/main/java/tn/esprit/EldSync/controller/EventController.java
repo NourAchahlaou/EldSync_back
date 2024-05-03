@@ -8,8 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.EldSync.model.Event;
+import tn.esprit.EldSync.Entity.User;
+
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import tn.esprit.EldSync.model.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.EldSync.service.ServiceEvent;
@@ -58,6 +63,13 @@ public class EventController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+
+    @PutMapping("/{eventId}/approve")
+    public ResponseEntity<Event> approveEvent(@PathVariable Long eventId) {
+        Event event = serviceEvent.approveEvent(eventId);
+        return ResponseEntity.ok(event);
     }
 
 
@@ -226,4 +238,10 @@ public class EventController {
         Set<Event> registeredEvents = serviceEvent.getRegisteredEventsForUser(idUser);
         return ResponseEntity.ok(registeredEvents);
     }*/
+
+    @GetMapping("/locationsSuggestions")
+    public Mono<List<String>> getLocationSuggestions(@RequestParam String query) {
+        return serviceEvent.getLocationSuggestions(query);
+    }
+
 }
