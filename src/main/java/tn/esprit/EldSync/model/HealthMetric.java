@@ -17,14 +17,16 @@ public class HealthMetric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int bloodPressure;
+    private int cholesterolLvl;
     private int heartRate;
-    private int bloodSugar;
+    private int bloodGlucoseLvl;
     private float weight;
     private float height;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HealthAlerts> healthAlerts = new ArrayList<>();
 
+    @ManyToOne
+    private Profile profile;
 }
 
