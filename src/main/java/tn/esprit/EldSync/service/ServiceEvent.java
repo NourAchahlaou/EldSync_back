@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
+import tn.esprit.EldSync.Entity.User;
 import tn.esprit.EldSync.model.Event;
 import tn.esprit.EldSync.model.EventStatus;
-import tn.esprit.EldSync.Entity.User;
+
 import tn.esprit.EldSync.repositoy.IEventRepository;
 import tn.esprit.EldSync.Repo.UserRepo;
-import tn.esprit.EldSync.model.Item;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -48,6 +46,18 @@ public class ServiceEvent  {
 
     @Value("${opencage.api.key}")
     private String apiKey;
+
+
+    public Event rescheduleEvent(Long eventId, LocalDate newDate) {
+        return eventRepository.findById(eventId).map(event -> {
+            event.setDate(newDate);
+            return eventRepository.save(event);
+        }).orElseThrow(() -> new RuntimeException("Event not found with id " + eventId));
+    }
+
+
+
+
 
     @PostConstruct
     public void initWebClient() {
@@ -203,22 +213,46 @@ public class ServiceEvent  {
     }
     public List<Event> filterEventsByCategory(String category) {return eventRepository.findByCategory(category);}
 
+
+
+    /*
     @Transactional
 
-    public void registerUserForEvent(Integer idUser, Long eventId) {
-        User user = userRepository.findById(String.valueOf(idUser)).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public void registerUserForEvent(Long id, Long eventId) {
+        User user = userRepository.findUserById(id);
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
         user.getEvents().add(event);
         userRepository.save(user);
     }
+    */
 
-    /*@Transactional
-
-    public Set<Event> getRegisteredEventsForUser(Integer idUser) {
-        User user = userRepository.findById(idUser).orElseThrow(() -> new EntityNotFoundException("User not found"));
+  /*  @Transactional
+    public Set<Event> getRegisteredEventsForUser(Long id) {
+        User user = userRepository.findUserById(id);
         return user.getEvents();
-    }*/
+    }
+*/
+  public List<Event> getRegisteredEventsForUser(Long userId) {
+      User user = userRepository.findById(String.valueOf(userId))
+              .orElseThrow(() -> new EntityNotFoundException("User not found"));
+      return new ArrayList<>(user.getEvents());
+  }
+
+
+
+    @Transactional
+    public void registerUserToEvent(Long userId, Long eventId) {
+        log.debug("Registering user {} to event {}", userId, eventId);
+        User user = userRepository.findById(String.valueOf(userId))
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + eventId));
+
+        event.getAttendees().add(user);
+        eventRepository.save(event);
+        log.debug("Registration successful for user {} to event {}", userId, eventId);
+    }
 
 
     public User getUserWithMostEventsAttended() {

@@ -1,6 +1,7 @@
 package tn.esprit.EldSync.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import tn.esprit.EldSync.Enum.ServiceType;
 import tn.esprit.EldSync.Enum.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -111,9 +112,14 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private PasswordResetToken passwordResetToken;
 
-@JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Event> events;
+    @JoinTable(
+            name = "event_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    @JsonBackReference
+    private Set<Event> events = new HashSet<>();
 
 }
 

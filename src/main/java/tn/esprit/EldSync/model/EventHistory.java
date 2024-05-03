@@ -17,11 +17,11 @@ public class EventHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idHistoryItem;
-
+/*
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
-
+*/
     @Enumerated(EnumType.STRING)
     private Attendance attendance;
 
