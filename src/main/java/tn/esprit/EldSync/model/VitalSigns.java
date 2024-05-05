@@ -1,36 +1,42 @@
 package tn.esprit.EldSync.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.Date;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "vitalSigns")
+@Table(name = "elderly_health_metrics")
 public class VitalSigns {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "observer_name")
+    private String nameOfObserver;
+
+    @Column(name = "oxygen_saturation")
     private int oxygenSaturation;
-    private int temperature;
-    private int bloodSugar;
-    private float respiratoryRate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("elder") // Ignore elder property during serialization
-    private List<HealthAlerts> healthAlerts = new ArrayList<>();
+    @Column(name = "temperature")
+    private double temperature;
 
-    @ManyToOne
-    @JsonIgnoreProperties("vitalSigns") // Ignore vitalSigns property during serialization
-    private Profile elder;
+    @Column(name = "heart_rate")
+    private int heartRate;
 
-    @ManyToOne
-    @JsonIgnoreProperties("vitalSigns") // Ignore vitalSigns property during serialization
-    private Profile measurementTaker;
+    @Column(name = "respiratory_rate")
+    private int respiratoryRate;
 
+    @Column(name = "elder_name")
+    private String nameOfElder;
+
+    @Column(name = "measurement_date")
+    private Date date;
 }
+
+
+
+

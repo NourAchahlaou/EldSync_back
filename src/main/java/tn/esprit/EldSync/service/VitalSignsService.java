@@ -2,9 +2,8 @@ package tn.esprit.EldSync.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tn.esprit.EldSync.model.Profile;
+
 import tn.esprit.EldSync.model.VitalSigns;
-import tn.esprit.EldSync.repositoy.ProfileRepository;
 import tn.esprit.EldSync.repositoy.VitalSignsRepository;
 
 import java.util.List;
@@ -12,41 +11,51 @@ import java.util.Optional;
 
 @Service
 public class VitalSignsService {
+    private final VitalSignsRepository vitalSignsRepository;
 
     @Autowired
-    private VitalSignsRepository vitalSignsRepository;
+    public VitalSignsService(VitalSignsRepository vitalSignsRepository) {
+        this.vitalSignsRepository = vitalSignsRepository;
+    }
 
-    @Autowired
-    private ProfileRepository profileRepository;
-
+    // Get all vital signs
     public List<VitalSigns> getAllVitalSigns() {
         return vitalSignsRepository.findAll();
     }
 
-    public Optional<VitalSigns> getVitalSignsById(int id) {
-        return vitalSignsRepository.findById(id);
+    // Get vital signs by ID
+    public VitalSigns getVitalSignsById(int id) {
+        Optional<VitalSigns> vitalSigns = vitalSignsRepository.findById(id);
+        return vitalSigns.orElse(null);
     }
 
-    public VitalSigns saveOrUpdateVitalSigns(VitalSigns vitalSigns) {
-        // Ensure that elder and measurementTaker profiles are not null
-        if (vitalSigns.getElder() == null || vitalSigns.getMeasurementTaker() == null) {
-            throw new IllegalArgumentException("Elder and MeasurementTaker profiles must be provided.");
-        }
-
-        // Retrieve or save elder profile
-        Profile elder = profileRepository.findById(vitalSigns.getElder().getIdProfile())
-                .orElse(profileRepository.save(vitalSigns.getElder()));
-        vitalSigns.setElder(elder);
-
-        // Retrieve or save measurementTaker profile
-        Profile measurementTaker = profileRepository.findById(vitalSigns.getMeasurementTaker().getIdProfile())
-                .orElse(profileRepository.save(vitalSigns.getMeasurementTaker()));
-        vitalSigns.setMeasurementTaker(measurementTaker);
-
-        // Save or update VitalSigns entity
+    // Add new vital signs
+    public VitalSigns addVitalSigns(VitalSigns vitalSigns) {
+        // Additional validation or business logic can be added here before saving
         return vitalSignsRepository.save(vitalSigns);
     }
 
+    // Update vital signs
+    public VitalSigns updateVitalSigns(int id, VitalSigns newVitalSigns) {
+        Optional<VitalSigns> existingVitalSignsOptional = vitalSignsRepository.findById(id);
+        if (existingVitalSignsOptional.isEmpty()) {
+            throw new RuntimeException("VitalSigns not found with id: " + id);
+        }
+
+        VitalSigns existingVitalSigns = existingVitalSignsOptional.get();
+        // Update existing vital signs with new data
+        existingVitalSigns.setNameOfObserver(newVitalSigns.getNameOfObserver());
+        existingVitalSigns.setOxygenSaturation(newVitalSigns.getOxygenSaturation());
+        existingVitalSigns.setTemperature(newVitalSigns.getTemperature());
+        existingVitalSigns.setHeartRate(newVitalSigns.getHeartRate());
+        existingVitalSigns.setRespiratoryRate(newVitalSigns.getRespiratoryRate());
+        existingVitalSigns.setNameOfElder(newVitalSigns.getNameOfElder());
+        existingVitalSigns.setDate(newVitalSigns.getDate());
+
+        return vitalSignsRepository.save(existingVitalSigns);
+    }
+
+    // Delete vital signs by ID
     public void deleteVitalSigns(int id) {
         vitalSignsRepository.deleteById(id);
     }

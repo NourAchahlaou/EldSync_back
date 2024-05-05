@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -12,21 +13,28 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "healthMetric")
+@Table(name = "elderly_health_metrics")
 public class HealthMetric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "observer_name")
+    private String observerName;
+
+    @Column(name = "cholesterol_lvl")
     private int cholesterolLvl;
-    private int heartRate;
+
+    @Column(name = "blood_glucose_lvl")
     private int bloodGlucoseLvl;
-    private float weight;
-    private float height;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HealthAlerts> healthAlerts = new ArrayList<>();
+    @Column(name = "weight")
+    private double weight;
 
-    @ManyToOne
-    private Profile profile;
+    @Column(name = "height")
+    private double height;
+
+    @Column(name = "date")
+    private Date date;
 }
 
