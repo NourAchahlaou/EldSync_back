@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "healthMetric")
+@Table(name = "health_Alerts")
 public class HealthAlerts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

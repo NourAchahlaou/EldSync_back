@@ -91,5 +91,6 @@ public class HealthMetricService {
 
         // Save the health alerts associated with the health metric
         healthMetric.setHealthAlerts(healthAlerts);
+        elderlyHealthMetricRepository.save(healthMetric);
     }
 }

@@ -37,11 +37,15 @@ public class VitalSignsService {
     }
 
     // Add new vital signs
+// Add new vital signs
     public VitalSigns addVitalSigns(VitalSigns vitalSigns) {
+        // Check for dangerous levels and create health alerts if needed
         createHealthAlertsForDangerousLevelsVitals(vitalSigns);
+
         // Additional validation or business logic can be added here before saving
         return vitalSignsRepository.save(vitalSigns);
     }
+
 
     // Update vital signs
     public VitalSigns updateVitalSigns(int id, VitalSigns newVitalSigns) {
@@ -72,6 +76,7 @@ public class VitalSignsService {
     }
 
     // Check vital signs for dangerous levels and create health alerts
+// Check vital signs for dangerous levels and create health alerts
     public void createHealthAlertsForDangerousLevelsVitals(VitalSigns vitalSigns) {
         List<HealthAlerts> healthAlerts = new ArrayList<>();
 
@@ -92,7 +97,8 @@ public class VitalSignsService {
             healthAlerts.add(new HealthAlerts(AlertType.RESPIRATORY_RATE_OUT_OF_RANGE, "Respiratory rate out of normal range", LocalDateTime.now(), ResolvedStatus.UNRESOLVED));
         }
 
-        // Save the health alerts associated with the vital signs
+        // Set the health alerts associated with the vital signs
         vitalSigns.setHealthAlerts(healthAlerts);
     }
+
 }
