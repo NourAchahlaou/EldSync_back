@@ -36,5 +36,10 @@ public class HealthMetric {
 
     @Column(name = "date")
     private Date date;
+
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "health_metric_id")
+    private List<HealthAlerts> healthAlerts;
 }
 

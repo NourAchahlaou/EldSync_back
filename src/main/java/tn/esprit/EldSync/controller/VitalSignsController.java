@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.EldSync.model.HealthMetric;
+import tn.esprit.EldSync.model.VitalSigns;
 import tn.esprit.EldSync.service.HealthMetricService;
+import tn.esprit.EldSync.service.VitalSignsService;
 
 
 import java.util.List;
@@ -15,40 +17,48 @@ import java.util.List;
 @RequestMapping("/vitalsigns")
 public class VitalSignsController {
 
-    private final HealthMetricService elderlyHealthMetricService;
+    private final VitalSignsService vitalSignsService;
 
     @Autowired
-    public VitalSignsController(HealthMetricService elderlyHealthMetricService) {
-        this.elderlyHealthMetricService = elderlyHealthMetricService;
+    public VitalSignsController(VitalSignsService vitalSignsService) {
+        this.vitalSignsService = vitalSignsService;
     }
 
     @GetMapping
-    public ResponseEntity<List<HealthMetric>> getAllElderlyHealthMetrics() {
-        List<HealthMetric> elderlyHealthMetrics = elderlyHealthMetricService.getAllElderlyHealthMetrics();
-        return ResponseEntity.ok(elderlyHealthMetrics);
+    public ResponseEntity<List<VitalSigns>> getAllVitalSigns() {
+        List<VitalSigns> vitalSignsList = vitalSignsService.getAllVitalSigns();
+        return new ResponseEntity<>(vitalSignsList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HealthMetric> getElderlyHealthMetricById(@PathVariable int id) {
-        HealthMetric elderlyHealthMetric = elderlyHealthMetricService.getElderlyHealthMetricById(id);
-        return ResponseEntity.ok(elderlyHealthMetric);
+    public ResponseEntity<VitalSigns> getVitalSignsById(@PathVariable("id") int id) {
+        VitalSigns vitalSigns = vitalSignsService.getVitalSignsById(id);
+        if (vitalSigns != null) {
+            return new ResponseEntity<>(vitalSigns, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
-    public ResponseEntity<HealthMetric> addElderlyHealthMetric(@RequestBody HealthMetric elderlyHealthMetric) {
-        HealthMetric createdElderlyHealthMetric = elderlyHealthMetricService.addElderlyHealthMetric(elderlyHealthMetric);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdElderlyHealthMetric);
+    public ResponseEntity<VitalSigns> addVitalSigns(@RequestBody VitalSigns vitalSigns) {
+        VitalSigns addedVitalSigns = vitalSignsService.addVitalSigns(vitalSigns);
+        return new ResponseEntity<>(addedVitalSigns, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HealthMetric> updateElderlyHealthMetric(@PathVariable int id, @RequestBody HealthMetric elderlyHealthMetric) {
-        HealthMetric updatedElderlyHealthMetric = elderlyHealthMetricService.updateElderlyHealthMetric(id, elderlyHealthMetric);
-        return ResponseEntity.ok(updatedElderlyHealthMetric);
+    public ResponseEntity<VitalSigns> updateVitalSigns(@PathVariable("id") int id, @RequestBody VitalSigns newVitalSigns) {
+        VitalSigns updatedVitalSigns = vitalSignsService.updateVitalSigns(id, newVitalSigns);
+        return new ResponseEntity<>(updatedVitalSigns, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteElderlyHealthMetric(@PathVariable int id) {
-        elderlyHealthMetricService.deleteElderlyHealthMetric(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteVitalSigns(@PathVariable("id") int id) {
+        vitalSignsService.deleteVitalSigns(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PostMapping("/health-alerts")
+    public void createHealthAlertsForDangerousLevels(@RequestBody VitalSigns vitalSigns) {
+        vitalSignsService.createHealthAlertsForDangerousLevelsVitals(vitalSigns);
     }
 }

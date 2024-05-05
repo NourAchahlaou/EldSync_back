@@ -3,6 +3,7 @@ package tn.esprit.EldSync.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -35,6 +36,11 @@ public class VitalSigns {
 
     @Column(name = "measurement_date")
     private Date date;
+
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "vital_signs_id")
+    private List<HealthAlerts> healthAlerts;
 }
 
 

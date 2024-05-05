@@ -49,4 +49,8 @@ public class HealthMetricController {
         healthMetricService.deleteElderlyHealthMetric(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @PostMapping("/health-alerts")
+    public void createHealthAlertsForDangerousLevels(@RequestBody HealthMetric healthMetric) {
+        healthMetricService.createHealthAlertsForDangerousLevels(healthMetric);
+    }
 }
