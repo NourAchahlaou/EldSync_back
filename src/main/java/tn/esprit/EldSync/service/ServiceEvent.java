@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -292,6 +294,15 @@ public class ServiceEvent  {
         return eventRepository.save(existingEvent);
     }
 */
+
+
+    public List<Event> getPopularEvents(int limit) {
+        return eventRepository.findEventsByPopularity(PageRequest.of(0, limit));
+    }
+    public List<Event> getPopularEventsUserNotRegisteredTo(Long userId, Pageable pageable) {
+        return eventRepository.findPopularEventsUserNotRegisteredTo(userId, pageable);
+    }
+
 
 }
 

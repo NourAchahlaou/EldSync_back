@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -182,6 +184,23 @@ public class EventController {
         return ResponseEntity.ok("User registered for the event");
     }
 */
+
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Event>> getPopularEvents() {
+        List<Event> popularEvents = serviceEvent.getPopularEvents(10); // Adjust the number based on your needs
+        return popularEvents.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(popularEvents);
+    }
+
+
+    @GetMapping("/popular/not-registered/{userId}")
+    public ResponseEntity<List<Event>> getPopularEventsUserNotRegistered(@PathVariable Long userId,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Event> events = serviceEvent.getPopularEventsUserNotRegisteredTo(userId, pageable);
+        return events.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(events);
+    }
 
     @PostMapping("/{eventId}/register/{userId}")
     public ResponseEntity<Map<String, String>> registerUserToEvent(@PathVariable Long userId, @PathVariable Long eventId) {
