@@ -14,22 +14,22 @@ import java.util.List;
 public class VitalSigns {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "observer_name")
     private String nameOfObserver;
 
     @Column(name = "oxygen_saturation")
-    private int oxygenSaturation;
+    private Integer oxygenSaturation;
 
     @Column(name = "temperature")
-    private double temperature;
+    private Double temperature;
 
     @Column(name = "heart_rate")
-    private int heartRate;
+    private Integer heartRate;
 
     @Column(name = "respiratory_rate")
-    private int respiratoryRate;
+    private Integer respiratoryRate;
 
     @Column(name = "elder_name")
     private String nameOfElder;

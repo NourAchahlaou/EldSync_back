@@ -17,22 +17,22 @@ import java.util.List;
 public class HealthMetric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "observer_name")
     private String observerName;
 
     @Column(name = "cholesterol_lvl")
-    private int cholesterolLvl;
+    private Integer cholesterolLvl;
 
     @Column(name = "blood_glucose_lvl")
-    private int bloodGlucoseLvl;
+    private Integer bloodGlucoseLvl;
 
     @Column(name = "weight")
-    private double weight;
+    private Double weight;
 
     @Column(name = "height")
-    private double height;
+    private Double height;
 
     @Column(name = "date")
     private Date date;

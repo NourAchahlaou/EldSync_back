@@ -54,4 +54,13 @@ public class VitalSignsController {
         vitalSignsService.deleteVitalSigns(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/latestupdates")
+    public ResponseEntity<VitalSigns> getLatestAttributeUpdates() {
+        VitalSigns latestUpdates = vitalSignsService.getLatestAttributeUpdates();
+        if (latestUpdates != null) {
+            return new ResponseEntity<>(latestUpdates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

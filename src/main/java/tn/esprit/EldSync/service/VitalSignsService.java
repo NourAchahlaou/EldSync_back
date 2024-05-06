@@ -11,6 +11,7 @@ import tn.esprit.EldSync.repositoy.VitalSignsRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +100,55 @@ public class VitalSignsService {
 
         // Set the health alerts associated with the vital signs
         vitalSigns.setHealthAlerts(healthAlerts);
+    }
+    public VitalSigns getLatestAttributeUpdates() {
+        List<VitalSigns> allVitalSigns = vitalSignsRepository.findAll();
+
+        // Initialize variables to store the latest updates
+        String latestNameOfObserver = "";
+        Integer latestOxygenSaturation = null;
+        Double latestTemperature = null;
+        Integer latestHeartRate = null;
+        Integer latestRespiratoryRate = null;
+        String latestNameOfElder = "";
+        Date latestMeasurementDate = null;
+
+        // Iterate through all vital signs to find the latest updates
+        for (VitalSigns vitalSigns : allVitalSigns) {
+            if (vitalSigns.getNameOfObserver() != null) {
+                latestNameOfObserver = vitalSigns.getNameOfObserver();
+            }
+            if (vitalSigns.getOxygenSaturation() != null) {
+                latestOxygenSaturation = vitalSigns.getOxygenSaturation();
+            }
+            if (vitalSigns.getTemperature() != null) {
+                latestTemperature = vitalSigns.getTemperature();
+            }
+            if (vitalSigns.getHeartRate() != null) {
+                latestHeartRate = vitalSigns.getHeartRate();
+            }
+            if (vitalSigns.getRespiratoryRate() != null) {
+                latestRespiratoryRate = vitalSigns.getRespiratoryRate();
+            }
+            if (vitalSigns.getNameOfElder() != null) {
+                latestNameOfElder = vitalSigns.getNameOfElder();
+            }
+            if (vitalSigns.getDate() != null) {
+                latestMeasurementDate = vitalSigns.getDate();
+            }
+        }
+
+        // Create a new VitalSigns object with the latest updates
+        VitalSigns latestUpdates = new VitalSigns();
+        latestUpdates.setNameOfObserver(latestNameOfObserver);
+        latestUpdates.setOxygenSaturation(latestOxygenSaturation);
+        latestUpdates.setTemperature(latestTemperature);
+        latestUpdates.setHeartRate(latestHeartRate);
+        latestUpdates.setRespiratoryRate(latestRespiratoryRate);
+        latestUpdates.setNameOfElder(latestNameOfElder);
+        latestUpdates.setDate(latestMeasurementDate);
+
+        return latestUpdates;
     }
 
 }

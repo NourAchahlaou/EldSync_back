@@ -8,6 +8,7 @@ import tn.esprit.EldSync.model.HealthMetric;
 import tn.esprit.EldSync.service.HealthMetricService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -52,5 +53,9 @@ public class HealthMetricController {
     @PostMapping("/health-alerts")
     public void createHealthAlertsForDangerousLevels(@RequestBody HealthMetric healthMetric) {
         healthMetricService.createHealthAlertsForDangerousLevels(healthMetric);
+    }
+    @GetMapping("/latest-updates")
+    public Map<String, Object> getLastUpdatesForAttributes() {
+        return healthMetricService.getLastUpdatesForAttributes();
     }
 }
