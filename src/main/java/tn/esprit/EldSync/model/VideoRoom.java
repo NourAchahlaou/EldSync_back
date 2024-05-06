@@ -1,6 +1,9 @@
 package tn.esprit.EldSync.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
 @Data
@@ -9,13 +12,9 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-public class Notes {
+public class VideoRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private String content;
-    @Column(name = "image_data", length = 100000)
-    @Lob
-    private byte[] imageData;
+    private String inviteCode;
 }

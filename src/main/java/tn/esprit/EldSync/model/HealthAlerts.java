@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "healthMetric")
+@Table(name = "health_Alerts")
 public class HealthAlerts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class HealthAlerts {
     private LocalDateTime alertDate;
     @Enumerated(EnumType.STRING)
     private ResolvedStatus resolvedStatus;
-
-/*    @Column(name = "health_metric_id")
-    private Integer healthMetricId;
-
-    @Column(name = "vital_signs_id")
-    private Integer vitalSignsId;*/
+    public HealthAlerts(AlertType alertType, String alertMessage, LocalDateTime alertDate, ResolvedStatus resolvedStatus) {
+        this.alertType = alertType;
+        this.alertMessage = alertMessage;
+        this.alertDate = alertDate;
+        this.resolvedStatus = resolvedStatus;
+    }
 
 }

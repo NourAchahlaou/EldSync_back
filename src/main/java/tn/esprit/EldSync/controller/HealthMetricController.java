@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.EldSync.model.HealthMetric;
+import tn.esprit.EldSync.model.VitalSigns;
 import tn.esprit.EldSync.service.HealthMetricService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,31 +21,48 @@ public class HealthMetricController {
 
     @GetMapping
     public List<HealthMetric> getAllHealthMetrics() {
-        return healthMetricService.getAllHealthMetrics();
+        return healthMetricService.getAllElderlyHealthMetrics();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<HealthMetric> getHealthMetricById(@PathVariable("id") int id) {
-        Optional<HealthMetric> healthMetric = healthMetricService.getHealthMetricById(id);
-        return healthMetric.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        HealthMetric healthMetric = healthMetricService.getElderlyHealthMetricById(id);
+        if (healthMetric != null) {
+            return new ResponseEntity<>(healthMetric, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
     public ResponseEntity<HealthMetric> addHealthMetric(@RequestBody HealthMetric healthMetric) {
-        HealthMetric newHealthMetric = healthMetricService.saveOrUpdateHealthMetric(healthMetric);
+        HealthMetric newHealthMetric = healthMetricService.addElderlyHealthMetric(healthMetric);
         return new ResponseEntity<>(newHealthMetric, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HealthMetric> updateHealthMetric(@PathVariable("id") int id, @RequestBody HealthMetric healthMetric) {
-        healthMetric.setId(id);
-        HealthMetric updatedHealthMetric = healthMetricService.saveOrUpdateHealthMetric(healthMetric);
+        HealthMetric updatedHealthMetric = healthMetricService.updateElderlyHealthMetric(id, healthMetric);
         return new ResponseEntity<>(updatedHealthMetric, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHealthMetric(@PathVariable("id") int id) {
-        healthMetricService.deleteHealthMetric(id);
+        healthMetricService.deleteElderlyHealthMetric(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PostMapping("/health-alerts")
+    public void createHealthAlertsForDangerousLevels(@RequestBody HealthMetric healthMetric) {
+        healthMetricService.createHealthAlertsForDangerousLevels(healthMetric);
+    }
+
+    @GetMapping("/latest-updates")
+    public ResponseEntity<HealthMetric> getLastUpdatesForAttributes() {
+        HealthMetric latestUpdates = healthMetricService.getLastUpdatesForAttributes();
+        if (latestUpdates != null) {
+            return new ResponseEntity<>(latestUpdates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

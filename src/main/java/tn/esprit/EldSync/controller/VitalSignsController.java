@@ -7,43 +7,60 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.EldSync.model.VitalSigns;
 import tn.esprit.EldSync.service.VitalSignsService;
 
+
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/vitalsigns")
 public class VitalSignsController {
+    private final VitalSignsService vitalSignsService;
 
     @Autowired
-    private VitalSignsService vitalSignsService;
+    public VitalSignsController(VitalSignsService vitalSignsService) {
+        this.vitalSignsService = vitalSignsService;
+    }
 
     @GetMapping
-    public List<VitalSigns> getAllVitalSigns() {
-        return vitalSignsService.getAllVitalSigns();
+    public ResponseEntity<List<VitalSigns>> getAllVitalSigns() {
+        List<VitalSigns> vitalSignsList = vitalSignsService.getAllVitalSigns();
+        return new ResponseEntity<>(vitalSignsList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VitalSigns> getVitalSignsById(@PathVariable("id") int id) {
-        Optional<VitalSigns> vitalSigns = vitalSignsService.getVitalSignsById(id);
-        return vitalSigns.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<VitalSigns> getVitalSignsById(@PathVariable int id) {
+        VitalSigns vitalSigns = vitalSignsService.getVitalSignsById(id);
+        if (vitalSigns != null) {
+            return new ResponseEntity<>(vitalSigns, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
     public ResponseEntity<VitalSigns> addVitalSigns(@RequestBody VitalSigns vitalSigns) {
-        VitalSigns newVitalSigns = vitalSignsService.saveOrUpdateVitalSigns(vitalSigns);
-        return new ResponseEntity<>(newVitalSigns, HttpStatus.CREATED);
+        VitalSigns createdVitalSigns = vitalSignsService.addVitalSigns(vitalSigns);
+        return new ResponseEntity<>(createdVitalSigns, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VitalSigns> updateVitalSigns(@PathVariable("id") int id, @RequestBody VitalSigns vitalSigns) {
-        vitalSigns.setId(id);
-        VitalSigns updatedVitalSigns = vitalSignsService.saveOrUpdateVitalSigns(vitalSigns);
+    public ResponseEntity<VitalSigns> updateVitalSigns(@PathVariable int id, @RequestBody VitalSigns newVitalSigns) {
+        VitalSigns updatedVitalSigns = vitalSignsService.updateVitalSigns(id, newVitalSigns);
         return new ResponseEntity<>(updatedVitalSigns, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVitalSigns(@PathVariable("id") int id) {
+    public ResponseEntity<Void> deleteVitalSigns(@PathVariable int id) {
         vitalSignsService.deleteVitalSigns(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @GetMapping("/latestupdates")
+    public ResponseEntity<VitalSigns> getLatestAttributeUpdates() {
+        VitalSigns latestUpdates = vitalSignsService.getLatestAttributeUpdates();
+        if (latestUpdates != null) {
+            return new ResponseEntity<>(latestUpdates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
