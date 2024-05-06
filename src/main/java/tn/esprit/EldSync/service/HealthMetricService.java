@@ -92,41 +92,35 @@ public class HealthMetricService {
         healthMetric.setHealthAlerts(healthAlerts);
         elderlyHealthMetricRepository.save(healthMetric);
     }
-    public Map<String, Object> getLastUpdatesForAttributes() {
-        List<HealthMetric> healthMetrics = getAllElderlyHealthMetrics();
-        Map<String, Object> lastUpdates = new HashMap<>();
+    public HealthMetric getLastUpdatesForAttributes() {
+        List<HealthMetric> healthMetrics = elderlyHealthMetricRepository.findAll();
+
 
         // Initialize variables to store the latest values
-        HealthMetric latestCholesterolMetric = null;
-        HealthMetric latestBloodGlucoseMetric = null;
-        HealthMetric latestWeightMetric = null;
+        Integer latestCholesterolMetric = null;
+        Integer latestBloodGlucoseMetric = null;
+        Double latestWeightMetric = null;
 
         // Loop through each health metric to find the latest updates
         for (HealthMetric healthMetric : healthMetrics) {
             // Check and update cholesterol level
-            if (healthMetric.getCholesterolLvl() != null &&
-                    (latestCholesterolMetric == null || healthMetric.getDate().after(latestCholesterolMetric.getDate()))) {
-                latestCholesterolMetric = healthMetric;
+            if (healthMetric.getCholesterolLvl() != null) {
+                latestCholesterolMetric = healthMetric.getCholesterolLvl();
+            }
+            if (healthMetric.getBloodGlucoseLvl() != null) {
+                latestBloodGlucoseMetric = healthMetric.getBloodGlucoseLvl();
+            }
+            if (healthMetric.getWeight() != null) {
+                latestWeightMetric = healthMetric.getWeight();
             }
 
-            // Check and update blood glucose level
-            if (healthMetric.getBloodGlucoseLvl() != null &&
-                    (latestBloodGlucoseMetric == null || healthMetric.getDate().after(latestBloodGlucoseMetric.getDate()))) {
-                latestBloodGlucoseMetric = healthMetric;
-            }
-
-            // Check and update weight
-            if (healthMetric.getWeight() != null &&
-                    (latestWeightMetric == null || healthMetric.getDate().after(latestWeightMetric.getDate()))) {
-                latestWeightMetric = healthMetric;
-            }
         }
+        HealthMetric latestUpdates = new HealthMetric();
+        latestUpdates.setCholesterolLvl(latestCholesterolMetric);
+        latestUpdates.setBloodGlucoseLvl(latestBloodGlucoseMetric);
+        latestUpdates.setWeight(latestWeightMetric);
 
-        // Add the latest updates to the map
-        lastUpdates.put("cholesterolLvl", latestCholesterolMetric != null ? latestCholesterolMetric.getCholesterolLvl() : null);
-        lastUpdates.put("bloodGlucoseLvl", latestBloodGlucoseMetric != null ? latestBloodGlucoseMetric.getBloodGlucoseLvl() : null);
-        lastUpdates.put("weight", latestWeightMetric != null ? latestWeightMetric.getWeight() : null);
 
-        return lastUpdates;
+        return latestUpdates;
     }
 }

@@ -49,6 +49,7 @@ public class VitalSignsService {
 
 
     // Update vital signs
+// Update vital signs
     public VitalSigns updateVitalSigns(int id, VitalSigns newVitalSigns) {
         Optional<VitalSigns> existingVitalSignsOptional = vitalSignsRepository.findById(id);
         if (existingVitalSignsOptional.isEmpty()) {
@@ -56,6 +57,7 @@ public class VitalSignsService {
         }
 
         VitalSigns existingVitalSigns = existingVitalSignsOptional.get();
+
         // Update existing vital signs with new data
         existingVitalSigns.setNameOfObserver(newVitalSigns.getNameOfObserver());
         existingVitalSigns.setOxygenSaturation(newVitalSigns.getOxygenSaturation());
@@ -65,14 +67,16 @@ public class VitalSignsService {
         existingVitalSigns.setNameOfElder(newVitalSigns.getNameOfElder());
         existingVitalSigns.setDate(newVitalSigns.getDate());
 
-        // Check for dangerous levels and create health alerts if needed
-        createHealthAlertsForDangerousLevelsVitals(existingVitalSigns);
+        // Check for dangerous levels and update health alerts if needed
+        createHealthAlertsForDangerousLevelsVitals(newVitalSigns);
 
-        return vitalSignsRepository.save(existingVitalSigns);
+        // Save the updated vital signs
+        return vitalSignsRepository.save(newVitalSigns);
     }
 
+
     // Delete vital signs by ID
-    public void deleteVitalSigns(int id) {
+    public void deleteVitalSigns(Integer id) {
         vitalSignsRepository.deleteById(id);
     }
 

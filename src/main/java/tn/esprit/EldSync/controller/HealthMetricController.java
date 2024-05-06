@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.EldSync.model.HealthMetric;
+import tn.esprit.EldSync.model.VitalSigns;
 import tn.esprit.EldSync.service.HealthMetricService;
 
 import java.util.List;
@@ -54,8 +55,14 @@ public class HealthMetricController {
     public void createHealthAlertsForDangerousLevels(@RequestBody HealthMetric healthMetric) {
         healthMetricService.createHealthAlertsForDangerousLevels(healthMetric);
     }
+
     @GetMapping("/latest-updates")
-    public Map<String, Object> getLastUpdatesForAttributes() {
-        return healthMetricService.getLastUpdatesForAttributes();
+    public ResponseEntity<HealthMetric> getLastUpdatesForAttributes() {
+        HealthMetric latestUpdates = healthMetricService.getLastUpdatesForAttributes();
+        if (latestUpdates != null) {
+            return new ResponseEntity<>(latestUpdates, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
