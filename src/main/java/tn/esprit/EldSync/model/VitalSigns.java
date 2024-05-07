@@ -41,6 +41,11 @@ public class VitalSigns {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "vital_signs_id")
     private List<HealthAlerts> healthAlerts;
+/*
+    @ManyToMany
+    @JoinColumn(name = "life_journey_stats_id")
+    private List<LifeJourneyStats> lifeJourneyStats;*/
+
 }
 
 
