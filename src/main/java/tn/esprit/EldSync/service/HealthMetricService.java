@@ -49,8 +49,8 @@ public class HealthMetricService {
         existingElderlyHealthMetric.setWeight(newElderlyHealthMetric.getWeight());
         existingElderlyHealthMetric.setHeight(newElderlyHealthMetric.getHeight());
         existingElderlyHealthMetric.setDate(newElderlyHealthMetric.getDate());
-        createHealthAlertsForDangerousLevels(existingElderlyHealthMetric);
-        return elderlyHealthMetricRepository.save(existingElderlyHealthMetric);
+        createHealthAlertsForDangerousLevels(newElderlyHealthMetric);
+        return elderlyHealthMetricRepository.save(newElderlyHealthMetric);
     }
 
     public void deleteElderlyHealthMetric(int id) {
@@ -100,6 +100,7 @@ public class HealthMetricService {
         Integer latestCholesterolMetric = null;
         Integer latestBloodGlucoseMetric = null;
         Double latestWeightMetric = null;
+        Date latestMeasurementDate = null;
 
         // Loop through each health metric to find the latest updates
         for (HealthMetric healthMetric : healthMetrics) {
@@ -113,12 +114,16 @@ public class HealthMetricService {
             if (healthMetric.getWeight() != null) {
                 latestWeightMetric = healthMetric.getWeight();
             }
+            if (healthMetric.getDate() != null) {
+                latestMeasurementDate = healthMetric.getDate();
+            }
 
         }
         HealthMetric latestUpdates = new HealthMetric();
         latestUpdates.setCholesterolLvl(latestCholesterolMetric);
         latestUpdates.setBloodGlucoseLvl(latestBloodGlucoseMetric);
         latestUpdates.setWeight(latestWeightMetric);
+        latestUpdates.setDate(latestMeasurementDate);
 
 
         return latestUpdates;

@@ -3,28 +3,40 @@ package tn.esprit.EldSync.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tn.esprit.EldSync.model.AlertType;
-import tn.esprit.EldSync.model.HealthAlerts;
-import tn.esprit.EldSync.model.ResolvedStatus;
-import tn.esprit.EldSync.model.VitalSigns;
+import tn.esprit.EldSync.model.*;
+import tn.esprit.EldSync.repositoy.HealthAlertRepository;
+import tn.esprit.EldSync.repositoy.LifeJourneyStatsRepository;
 import tn.esprit.EldSync.repositoy.VitalSignsRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @Service
 public class VitalSignsService {
+
+
+
+
     private final VitalSignsRepository vitalSignsRepository;
-
-
+    private final LifeJourneyStatsRepository lifeJourneyStatsRepository;
+    private final HealthAlertRepository healthAlertRepository;
 
     @Autowired
-    public VitalSignsService(VitalSignsRepository vitalSignsRepository) {
+    public VitalSignsService(VitalSignsRepository vitalSignsRepository,
+                             LifeJourneyStatsRepository lifeJourneyStatsRepository,
+                             HealthAlertRepository healthAlertRepository
+                             ) {
         this.vitalSignsRepository = vitalSignsRepository;
+        this.lifeJourneyStatsRepository = lifeJourneyStatsRepository;
+        this.healthAlertRepository = healthAlertRepository;
     }
+
 
     // Get all vital signs
     public List<VitalSigns> getAllVitalSigns() {
@@ -104,6 +116,7 @@ public class VitalSignsService {
 
         // Set the health alerts associated with the vital signs
         vitalSigns.setHealthAlerts(healthAlerts);
+        healthAlertRepository.saveAll(healthAlerts);
     }
     public VitalSigns getLatestAttributeUpdates() {
         List<VitalSigns> allVitalSigns = vitalSignsRepository.findAll();
@@ -152,7 +165,102 @@ public class VitalSignsService {
         latestUpdates.setNameOfElder(latestNameOfElder);
         latestUpdates.setDate(latestMeasurementDate);
 
+
+
         return latestUpdates;
     }
 
+
+    public List<LifeJourneyStats> createLifeJourneyStatsForAllWeeks() {
+        Date startDate = getStartDate();
+        Date endDate = getEndDate();
+        List<LifeJourneyStats> lifeJourneyStatsList = new ArrayList<>();
+
+        if (startDate == null || endDate == null)
+            return lifeJourneyStatsList; // Handle null dates gracefully
+
+        // Calculate the number of weeks between start and end dates
+        long days = ChronoUnit.DAYS.between(startDate.toInstant(), endDate.toInstant()) + 1;
+        long weeks = days / 7; // Calculate the number of weeks
+        // Iterate over each week and create LifeJourneyStats
+        for (int i = 0; i < weeks; i++) {
+            Date weekStartDate = calculateWeekStartDate(startDate, i);
+            Date weekEndDate = calculateWeekEndDate(weekStartDate);
+
+            ZonePrediction zonePrediction = predictZoneForWeek(weekStartDate, weekEndDate);
+
+            LifeJourneyStats lifeJourneyStats = new LifeJourneyStats();
+            lifeJourneyStats.setZonePrediction(zonePrediction);
+            lifeJourneyStats.setStartWeek(weekStartDate);
+            lifeJourneyStats.setEndWeek(weekEndDate);
+            lifeJourneyStatsRepository.save(lifeJourneyStats);
+            lifeJourneyStatsList.add(lifeJourneyStats);
+        }
+
+        return lifeJourneyStatsList;
+    }
+
+    private ZonePrediction predictZoneForWeek(Date startDate, Date endDate) {
+        // Retrieve vital signs data for the given week
+        List<VitalSigns> vitalSignsForWeek = vitalSignsRepository.findByDateBetween(startDate, endDate);
+
+        if (vitalSignsForWeek.isEmpty()) {
+            // No data available for the week, return SAFE
+            return ZonePrediction.SAFE;
+        }
+
+        // Calculate average vital signs for the week
+        double averageTemperature = vitalSignsForWeek.stream()
+                .mapToDouble(VitalSigns::getTemperature)
+                .average()
+                .orElse(0);
+
+        double averageHeartRate = vitalSignsForWeek.stream()
+                .mapToDouble(VitalSigns::getHeartRate)
+                .average()
+                .orElse(0);
+
+        // Define thresholds for each zone
+        double safeTemperatureThreshold = 37.0; // Celsius
+        int safeHeartRateThreshold = 100; // beats per minute
+
+        double warningTemperatureThreshold = 38.0; // Celsius
+        int warningHeartRateThreshold = 120; // beats per minute
+
+        // Analyze vital signs data and predict zone
+        if (averageTemperature <= safeTemperatureThreshold && averageHeartRate <= safeHeartRateThreshold) {
+            return ZonePrediction.SAFE;
+        } else if (averageTemperature <= warningTemperatureThreshold || averageHeartRate <= warningHeartRateThreshold) {
+            return ZonePrediction.WARNING;
+        } else {
+            return ZonePrediction.DANGER;
+        }
+    }
+
+
+    private Date calculateWeekStartDate(Date startDate, int weekIndex) {
+        // Calculate the start date of the week based on the week index
+        // For simplicity, let's assume each week starts on Monday
+        long millisInWeek = 7 * 24 * 60 * 60 * 1000L; // Milliseconds in a week
+        long weekStartMillis = startDate.getTime() + (weekIndex * millisInWeek);
+        return new Date(weekStartMillis);
+    }
+
+    // Method to calculate the end date of a specific week
+    private Date calculateWeekEndDate(Date weekStartDate) {
+        // Calculate the end date of the week by adding 6 days to the start date
+        // For simplicity, let's assume each week ends on Sunday
+        long millisInDay = 24 * 60 * 60 * 1000L; // Milliseconds in a day
+        long weekEndMillis = weekStartDate.getTime() + (6 * millisInDay);
+        return new Date(weekEndMillis);
+    }
+
+    private Date getStartDate() {
+        return vitalSignsRepository.findEarliestMeasurementDate();
+    }
+
+    // Method to get the end date of the last recorded measurement
+    private Date getEndDate() {
+        return vitalSignsRepository.findLatestMeasurementDate();
+    }
 }
